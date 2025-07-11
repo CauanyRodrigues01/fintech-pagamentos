@@ -42,7 +42,6 @@ public class Fatura {
     private BigDecimal valor;
 
     @NotNull(message = "O status da fatura é obrigatório")
-    @Size(min = 1, max = 1, message = "O status da fatura só pode ter um caracter.")
     @Pattern(regexp = "[PAB]", message = "O status da fatura deve ser 'P' (Paga), 'A' (Atrasada) ou 'B' (Aberta).")
     @Column(nullable = false, length = 1)
     private Character status;

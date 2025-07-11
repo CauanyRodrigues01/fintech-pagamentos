@@ -38,7 +38,6 @@ public class Cliente {
     private LocalDate dataNascimento;
 
     @NotNull(message = "O status de bloqueio é obrigatório.")
-    @Size(min = 1, max = 1, message = "O status de bloqueio só pode ter um caracter.")
     @Pattern(regexp = "[AB]", message = "O status de bloqueio de ser 'A' (Ativo) ou 'B' (Bloqueado).")
     @Column(name = "status_bloqueio", nullable = false, length = 1)
     private Character statusBloqueio; // 'A' para Ativo, 'B' para Bloqueado
