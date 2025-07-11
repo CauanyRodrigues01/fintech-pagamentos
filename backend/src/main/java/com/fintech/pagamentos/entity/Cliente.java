@@ -29,6 +29,7 @@ public class Cliente {
 
     @NotBlank(message = "O CPF é obrigatório.")
     @Size(min = 11, max = 11, message = "O CPF deve ter exatamemte 11 dígitos.")
+    @Pattern(regexp = "\\d{11}", message = "O CPF deve conter apenas dígitos.")
     @Column(nullable = false, unique = true, length = 11)
     private String cpf;
 
