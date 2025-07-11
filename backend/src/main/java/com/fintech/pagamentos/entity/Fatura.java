@@ -21,6 +21,10 @@ public class Fatura {
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cliente_id", nullable = false)
+    private Cliente cliente;
+
     @Column(name = "data_vencimento", nullable = false)
     private LocalDate dataVencimento;
 
