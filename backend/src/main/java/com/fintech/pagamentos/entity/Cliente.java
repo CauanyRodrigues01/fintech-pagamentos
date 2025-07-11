@@ -1,8 +1,6 @@
 package com.fintech.pagamentos.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,8 +18,8 @@ import java.util.UUID;
 public class Cliente {
 
     @Id
-    @Column(name = "id", columnDefinition = "UUID")
-    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
 
     @NotBlank(message = "O nome é obrigatório.")
