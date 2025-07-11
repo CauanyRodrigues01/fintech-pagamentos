@@ -1,5 +1,6 @@
 package com.fintech.pagamentos.entity;
 
+import com.fintech.pagamentos.validation.ValidCharStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -42,7 +43,7 @@ public class Fatura {
     private BigDecimal valor;
 
     @NotNull(message = "O status da fatura é obrigatório")
-    @Pattern(regexp = "[PAB]", message = "O status da fatura deve ser 'P' (Paga), 'A' (Atrasada) ou 'B' (Aberta).")
+    @ValidCharStatus(allowedValues = {'P', 'A', 'B'}, message = "O status da fatura deve ser 'P' (Paga), 'A' (Atrasada) ou 'B' (Aberta).")
     @Column(nullable = false, length = 1)
     private Character status;
 

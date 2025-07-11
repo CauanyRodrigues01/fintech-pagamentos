@@ -1,5 +1,6 @@
 package com.fintech.pagamentos.entity;
 
+import com.fintech.pagamentos.validation.ValidCharStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -39,7 +40,7 @@ public class Cliente {
     private LocalDate dataNascimento;
 
     @NotNull(message = "O status de bloqueio é obrigatório.")
-    @Pattern(regexp = "[AB]", message = "O status de bloqueio de ser 'A' (Ativo) ou 'B' (Bloqueado).")
+    @ValidCharStatus(allowedValues = {'A', 'B'}, message = "O status de bloqueio deve ser 'A' (Ativo) ou 'B' (Bloqueado).")
     @Column(name = "status_bloqueio", nullable = false, length = 1)
     private Character statusBloqueio; // 'A' para Ativo, 'B' para Bloqueado
 
