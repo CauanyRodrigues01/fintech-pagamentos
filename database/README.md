@@ -29,4 +29,4 @@ Use os arquivos `schema.sql` e `seed.sql` para criar e popular o banco no SGBD P
 
 ## Diagrama ER
 
-![Diagrama ER.png](C:\Users\cauan\OneDrive\Documentos\Git\fintech-pagamentos\database\Diagrama%20ER.png)
+![Diagrama ER.png](https://github.com/CauanyRodrigues01/fintech-pagamentos/blob/main/database/Diagrama%20ER.png?raw=true)
