@@ -7,8 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,8 +17,8 @@ import java.util.UUID;
 public class Fatura {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", columnDefinition = "UUID")
-    @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID id;
 
     @NotNull(message = "A fatura deve estar associada a um cliente.")
@@ -29,7 +27,6 @@ public class Fatura {
     private Cliente cliente;
 
     @NotNull(message = "A data de vencimento é obrigatória.")
-    @FutureOrPresent(message = "A data de vencimento deve ser igual ou posterior à data atual.")
     @Column(name = "data_vencimento", nullable = false)
     private LocalDate dataVencimento;
 
