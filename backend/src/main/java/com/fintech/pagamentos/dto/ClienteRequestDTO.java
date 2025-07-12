@@ -1,5 +1,6 @@
 package com.fintech.pagamentos.dto;
 
+import com.fintech.pagamentos.validation.ValidCharStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
@@ -32,8 +33,7 @@ public class ClienteRequestDTO {
     private LocalDate dataNascimento;
 
     @NotNull(message = "O status de bloqueio é obrigatório.")
-    @Size(min = 1, max = 1, message = "O status de bloqueio só pode ter um caracter.")
-    @Pattern(regexp = "[AB]", message = "O status de bloqueio de ser 'A' (Ativo) ou 'B' (Bloqueado).")
+    @ValidCharStatus(allowedValues = {'A', 'B'}, message = "O status de bloqueio deve ser 'A' (Ativo) ou 'B' (Bloqueado).")
     private Character statusBloqueio; // 'A' para Ativo, 'B' para Bloqueado
 
     @NotNull(message = "O limite de crédito é obrigatório.")
