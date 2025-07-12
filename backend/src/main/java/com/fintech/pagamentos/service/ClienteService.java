@@ -3,12 +3,18 @@ package com.fintech.pagamentos.service;
 import com.fintech.pagamentos.dto.ClienteRequestDTO;
 import com.fintech.pagamentos.dto.ClienteResponseDTO;
 import com.fintech.pagamentos.entity.Cliente;
+import com.fintech.pagamentos.entity.Fatura;
 import com.fintech.pagamentos.repository.ClienteRepository;
+import com.fintech.pagamentos.repository.FaturaRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.cglib.core.Local;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,10 +24,12 @@ import java.util.stream.Collectors;
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final FaturaRepository faturaRepository;
     private final ModelMapper modelMapper;
 
-    public ClienteService(ClienteRepository clienteRepository, ModelMapper modelMapper) {
+    public ClienteService(ClienteRepository clienteRepository, FaturaRepository faturaRepository, ModelMapper modelMapper) {
         this.clienteRepository = clienteRepository;
+        this.faturaRepository = faturaRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -83,6 +91,25 @@ public class ClienteService {
         return clienteRepository.findByStatusBloqueio('B').stream()
                 .map(cliente -> modelMapper.map(cliente, ClienteResponseDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    public void verificarEBloquearClientesAtrasados() {
+        System.out.println("Executando job de verificação e bloqueio de clientes em: " + LocalDateTime.now());
+        LocalDate tresDiasAtras = LocalDate.now().minusDays(3);
+
+        List<Fatura> faturasCriticas = faturaRepository.findByStatusAndDataVencimentoBefore('A', tresDiasAtras);
+
+        for (Fatura fatura : faturasCriticas) {
+            Cliente cliente = fatura.getCliente();
+            if (cliente != null && cliente.getStatusBloqueio() == 'A') {
+                cliente.setStatusBloqueio('B');
+                cliente.setLimiteCredito(BigDecimal.ZERO);
+                clienteRepository.save(cliente);
+                System.out.println("Cliente " + cliente.getNome() + " (CPF: " + cliente.getCpf() + ") bloqueado devido a fatura ID " + fatura.getId() + " atrasada.");
+            }
+        }
     }
 
 }
