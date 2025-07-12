@@ -39,6 +39,18 @@ public class ClienteController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ClienteResponseDTO> atualizaCliente(
+            @PathVariable UUID id,
+            @Valid @RequestBody ClienteRequestDTO clienteDto) {
+
+        ClienteResponseDTO clienteAtualizado = clienteService.atualizarCliente(id, clienteDto);
+
+        return ResponseEntity.ok(clienteAtualizado);
+
+    }
+
+
     @GetMapping("/bloqueados")
     public ResponseEntity<List<ClienteResponseDTO>> listarClientesBloqueados() {
         List<ClienteResponseDTO> clientesBloqueados = clienteService.listarClientesBloqueados();
