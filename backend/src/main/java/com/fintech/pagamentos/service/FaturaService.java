@@ -1,9 +1,11 @@
 package com.fintech.pagamentos.service;
 
+import com.fintech.pagamentos.dto.ClienteResponseDTO;
 import com.fintech.pagamentos.dto.FaturaPaymentRequestDTO;
 import com.fintech.pagamentos.dto.FaturaResponseDTO;
 import com.fintech.pagamentos.entity.Fatura;
 import com.fintech.pagamentos.repository.FaturaRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +18,23 @@ import java.util.stream.Collectors;
 public class FaturaService {
 
     private final FaturaRepository faturaRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public FaturaService(FaturaRepository faturaRepository) {
+    public FaturaService(FaturaRepository faturaRepository, ModelMapper modelMapper) {
         this.faturaRepository = faturaRepository;
+        this.modelMapper = modelMapper;
+    }
+
+    @Transactional
+    public List<FaturaResponseDTO> listarTodasFaturas() {
+
+        List<Fatura> faturas = faturaRepository.findAllWithCliente();
+
+        return faturas.stream()
+                .map(fatura -> modelMapper.map(fatura, FaturaResponseDTO.class))
+                .collect(Collectors.toList());
+
     }
 
     @Transactional

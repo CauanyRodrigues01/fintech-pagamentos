@@ -12,6 +12,9 @@ import java.util.UUID;
 
 public interface FaturaRepository extends JpaRepository<Fatura, UUID> {
 
+    @Query("SELECT f FROM Fatura f JOIN FETCH f.cliente")
+    List<Fatura> findAllWithCliente();
+
     @Query("SELECT f FROM Fatura f JOIN FETCH f.cliente WHERE f.id = :faturaId")
     Optional<Fatura> findByIdWithCliente(@Param("faturaId") UUID faturaId);
 

@@ -1,5 +1,6 @@
 package com.fintech.pagamentos.controller;
 
+import com.fintech.pagamentos.dto.ClienteResponseDTO;
 import com.fintech.pagamentos.dto.FaturaPaymentRequestDTO;
 import com.fintech.pagamentos.dto.FaturaResponseDTO;
 import com.fintech.pagamentos.entity.Fatura;
@@ -19,6 +20,12 @@ public class FaturaController {
 
     public FaturaController(FaturaService faturaService) {
         this.faturaService = faturaService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FaturaResponseDTO>> listarTodasFaturas() {
+        List<FaturaResponseDTO> faturas = faturaService.listarTodasFaturas();
+        return ResponseEntity.ok(faturas);
     }
 
     @GetMapping("/{clienteId}")
