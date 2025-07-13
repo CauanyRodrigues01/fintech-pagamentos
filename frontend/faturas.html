@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faturas do Cliente - Fintech Pagamentos</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Faturas do Cliente</h1>
+        <a href="index.html">Voltar para Clientes</a>
+    </header>
+    <main>
+        <section id="client-info">
+            <h2>Faturas para <span id="client-name"></span></h2>
+            <p>ID do Cliente: <span id="client-id"></span></p>
+        </section>
+        <section id="invoice-list">
+            <h3>Lista de Faturas</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Valor</th>
+                        <th>Data de Vencimento</th>
+                        <th>Status</th>
+                        <th>Data de Pagamento</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="invoices-tbody">
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <script src="./assets/js/script.js"></script>
+</body>
+
+</html>
