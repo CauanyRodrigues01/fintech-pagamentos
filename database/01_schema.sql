@@ -1,3 +1,7 @@
+-- Garante que o banco de dados esteja no estado correto para criação das tabelas
+DROP TABLE IF EXISTS Fatura;
+DROP TABLE IF EXISTS Cliente;
+
 CREATE TABLE Cliente (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nome VARCHAR(100) NOT NULL,
