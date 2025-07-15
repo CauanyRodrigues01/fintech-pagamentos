@@ -1,51 +1,57 @@
-const API_BASE_URL = 'http://localhost:8080'; // URL da sua API Spring Boot
+const API_BASE_URL = 'http://localhost:8080';
 
+// Lógica de inicialização da página
 document.addEventListener('DOMContentLoaded', () => {
-    loadClients(); // Carrega clientes ao carregar a página
-    setupClientForm(); // Configura o formulário de cadastro de cliente
+    if (document.getElementById('clientes-tbody')) {
+        carregarClientes();
+        configurarFormularioCliente();
+    }
+    if (document.getElementById('faturas-tbody')) {
+        carregarFaturasCliente();
+    }
 });
 
 // Função para carregar e exibir a lista de clientes
-async function loadClients() {
-    const tbody = document.getElementById('clients-tbody');
-    tbody.innerHTML = ''; // Limpa a tabela
+async function carregarClientes() {
+    const corpoTabela = document.getElementById('clientes-tbody');
+    corpoTabela.innerHTML = ''; // Limpa a tabela
 
     try {
-        const response = await fetch(`${API_BASE_URL}/clientes`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        const resposta = await fetch(`${API_BASE_URL}/clientes`);
+        if (!resposta.ok) {
+            throw new Error(`HTTP error! status: ${resposta.status}`);
         }
-        const clients = await response.json();
+        const clientes = await resposta.json();
 
-        clients.forEach(client => {
-            const row = tbody.insertRow();
+        clientes.forEach(cliente => {
+            const linha = corpoTabela.insertRow();
 
             // Nome
-            const nameCell = row.insertCell();
-            nameCell.textContent = client.nome;
+            const nomeCell = linha.insertCell();
+            nomeCell.textContent = cliente.nome;
 
             // CPF
-            const cpfCell = row.insertCell();
-            cpfCell.textContent = client.cpf;
+            const cpfCell = linha.insertCell();
+            cpfCell.textContent = cliente.cpf;
 
             // Idade (Calculado)
-            const ageCell = row.insertCell();
-            ageCell.textContent = calculateAge(client.dataNascimento); // Função a ser criada
+            const idadeCell = linha.insertCell();
+            idadeCell.textContent = calcularIdade(cliente.dataNascimento); 
 
             // Status de Bloqueio
-            const statusCell = row.insertCell();
-            statusCell.textContent = client.statusBloqueio === 'A' ? 'Ativo' : 'Bloqueado';
+            const statusCell = linha.insertCell();
+            statusCell.textContent = cliente.statusBloqueio === 'A' ? 'Ativo' : 'Bloqueado';
 
             // Limite de Crédito
-            const limitCell = row.insertCell();
-            limitCell.textContent = `R$ ${client.limiteCredito.toFixed(2)}`; // Formata para 2 casas decimais
+            const limiteCell = linha.insertCell();
+            limiteCell.textContent = `R$ ${cliente.limiteCredito.toFixed(2)}`; // Formata para 2 casas decimais
 
             // Botões de Ações
-            const actionsCell = row.insertCell();
-            const viewFaturasBtn = document.createElement('button');
-            viewFaturasBtn.textContent = 'Ver Faturas';
-            viewFaturasBtn.onclick = () => window.location.href = `faturas.html?clienteId=${client.id}`;
-            actionsCell.appendChild(viewFaturasBtn);
+            const acoesCell = linha.insertCell();
+            const verFaturasBtn = document.createElement('button');
+            verFaturasBtn.textContent = 'Ver Faturas';
+            verFaturasBtn.onclick = () => window.location.href = `faturas.html?clienteId=${cliente.id}`;
+            acoesCell.appendChild(verFaturasBtn);
         });
     } catch (error) {
         console.error('Erro ao carregar clientes:', error);
@@ -54,61 +60,61 @@ async function loadClients() {
 }
 
 // Função para calcular idade
-function calculateAge(dateOfBirth) {
-    const birthDate = new Date(dateOfBirth);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
+function calcularIdade(dataDeNascimentoString) {
+    const dataNascimentoObj = new Date(dataDeNascimentoString);
+    const hoje = new Date();
+    let idade = hoje.getFullYear() - dataNascimentoObj.getFullYear();
+    const mes = hoje.getMonth() - dataNascimentoObj.getMonth();
+    if (mes < 0 || (mes === 0 && hoje.getDate() < dataNascimentoObj.getDate())) {
+        idade--;
     }
-    return age;
+    return idade;
 }
 
 // Função para configurar o formulário de cadastro
-function setupClientForm() {
-    const form = document.getElementById('client-form');
+function configurarFormularioCliente() {
+    const form = document.getElementById('cliente-form');
     form.addEventListener('submit', async (event) => {
         event.preventDefault(); // Evita o recarregamento da página
 
-        const formData = new FormData(form);
-        const clientData = {};
-        formData.forEach((value, key) => {
-            if (key === 'limiteCredito') {
-                clientData[key] = parseFloat(value); // Converte para número
-            } else if (key === 'dataNascimento') {
-                clientData[key] = value; // Data em formato YYYY-MM-DD
-            } else if (key === 'statusBloqueio') {
-                clientData[key] = value.charAt(0); // Pega apenas o caractere 'A' ou 'B'
+        const formDados = new FormData(form);
+        const clienteData = {};
+        formDados.forEach((valorCampo, chaveCampo) => {
+            if (chaveCampo === 'limiteCredito') {
+                clienteData[chaveCampo] = parseFloat(valorCampo); // Converte para número
+            } else if (chaveCampo === 'dataNascimento') {
+                clienteData[chaveCampo] = valorCampo; // Data em formato YYYY-MM-DD
+            } else if (chaveCampo === 'statusBloqueio') {
+                clienteData[chaveCampo] = valorCampo.charAt(0); // Pega apenas o caractere 'A' ou 'B'
             } else {
-                clientData[key] = value;
+                clienteData[chaveCampo] = valorCampo;
             }
         });
 
         try {
-            const response = await fetch(`${API_BASE_URL}/clientes`, {
+            const resposta = await fetch(`${API_BASE_URL}/clientes`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(clientData)
+                body: JSON.stringify(clienteData)
             });
 
-            if (response.status === 400) { // Erro de validação
-                const errorBody = await response.json();
+            if (resposta.status === 400) { // Erro de validação
+                const errorBody = await resposta.json();
                 alert(`Erro de validação: ${errorBody.message}\nDetalhes: ${errorBody.details ? errorBody.details.join('\n') : ''}`);
                 console.error('Detalhes do erro de validação:', errorBody);
                 return;
             }
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            if (!resposta.ok) {
+                throw new Error(`HTTP error! status: ${resposta.status}`);
             }
 
-            const newClient = await response.json();
-            alert(`Cliente ${newClient.nome} cadastrado com sucesso!`);
+            const novoCliente = await resposta.json();
+            alert(`Cliente ${novoCliente.nome} cadastrado com sucesso!`);
             form.reset(); // Limpa o formulário
-            loadClients(); // Recarrega a lista de clientes
+            carregarClientes(); // Recarrega a lista de clientes
         } catch (error) {
             console.error('Erro ao cadastrar cliente:', error);
             alert('Erro ao cadastrar cliente. Verifique o console.');
@@ -116,62 +122,49 @@ function setupClientForm() {
     });
 }
 
+async function carregarFaturasCliente() {
+    const parametrosURL = new URLSearchParams(window.location.search);
+    const clienteId = parametrosURL.get('clienteId');
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Para index.html
-    if (document.getElementById('clients-tbody')) {
-        loadClients();
-        setupClientForm();
-    }
-    // Para faturas.html
-    if (document.getElementById('invoices-tbody')) {
-        loadClientInvoices();
-    }
-});
-
-async function loadClientInvoices() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const clientId = urlParams.get('clienteId');
-
-    if (!clientId) {
+    if (!clienteId) {
         alert('ID do cliente não fornecido na URL.');
         window.location.href = 'index.html'; // Redireciona de volta
         return;
     }
 
-    document.getElementById('client-id').textContent = clientId;
+    document.getElementById('cliente-id').textContent = clienteId;
 
-    const tbody = document.getElementById('invoices-tbody');
-    tbody.innerHTML = ''; // Limpa a tabela
+    const corpoTabelaFaturas = document.getElementById('faturas-tbody');
+    corpoTabelaFaturas.innerHTML = ''; // Limpa a tabela
 
     try {
-        const response = await fetch(`${API_BASE_URL}/faturas/${clientId}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        const resposta = await fetch(`${API_BASE_URL}/faturas/${clienteId}`);
+        if (!resposta.ok) {
+            throw new Error(`HTTP error! status: ${resposta.status}`);
         }
-        const invoices = await response.json();
+        const faturas = await resposta.json();
 
-        if (invoices.length > 0) {
-            document.getElementById('client-name').textContent = invoices[0].clienteNome || 'Cliente Desconhecido';
+        if (faturas.length > 0) {
+            document.getElementById('cliente-nome').textContent = faturas[0].clienteNome || 'Cliente Desconhecido';
         } else {
-            document.getElementById('client-name').textContent = 'Cliente sem faturas ou Desconhecido';
+            document.getElementById('cliente-nome').textContent = 'Cliente sem faturas ou Desconhecido';
         }
 
-        invoices.forEach(invoice => {
-            const row = tbody.insertRow();
+        faturas.forEach(fatura => {
+            const linha = corpoTabelaFaturas.insertRow();
 
             // Valor
-            const valueCell = row.insertCell();
-            valueCell.textContent = `R$ ${invoice.valor.toFixed(2)}`;
+            const valorCell = linha.insertCell();
+            valorCell.textContent = `R$ ${fatura.valor.toFixed(2)}`;
 
             // Data de Vencimento
-            const dueDateCell = row.insertCell();
-            dueDateCell.textContent = invoice.dataVencimento;
+            const dataVencimentoCell = linha.insertCell();
+            dataVencimentoCell.textContent = fatura.dataVencimento;
 
             // Status
-            const statusCell = row.insertCell();
+            const statusCell = linha.insertCell();
             let statusText = '';
-            switch(invoice.status) {
+            switch(fatura.status) {
                 case 'P': statusText = 'Paga'; break;
                 case 'A': statusText = 'Atrasada'; break;
                 case 'B': statusText = 'Aberta'; break;
@@ -180,16 +173,16 @@ async function loadClientInvoices() {
             statusCell.textContent = statusText;
 
             // Data de Pagamento
-            const paymentDateCell = row.insertCell();
-            paymentDateCell.textContent = invoice.dataPagamento || 'N/A';
+            const dataPagamentoCell = linha.insertCell();
+            dataPagamentoCell.textContent = fatura.dataPagamento || 'N/A';
 
             // Botões de Ações
-            const actionsCell = row.insertCell();
-            if (invoice.status !== 'P') { // Só mostra botão se a fatura não estiver paga
-                const payBtn = document.createElement('button');
-                payBtn.textContent = 'Registrar Pagamento';
-                payBtn.onclick = () => registerPayment(invoice.id);
-                actionsCell.appendChild(payBtn);
+            const acoesCell = linha.insertCell();
+            if (fatura.status !== 'P') { // Só mostra botão se a fatura não estiver paga
+                const pagarBtn = document.createElement('button');
+                pagarBtn.textContent = 'Registrar Pagamento';
+                pagarBtn.onclick = () => registrarPagamento(fatura.id);
+                acoesCell.appendChild(pagarBtn);
             }
         });
 
@@ -199,32 +192,32 @@ async function loadClientInvoices() {
     }
 }
 
-async function registerPayment(invoiceId) {
-    const paymentDate = new Date().toISOString().split('T')[0]; // Data atual no formato YYYY-MM-DD
+async function registrarPagamento(faturaId) {
+    const dataPagamento = new Date().toISOString().split('T')[0]; // Data atual no formato YYYY-MM-DD
 
     try {
-        const response = await fetch(`${API_BASE_URL}/faturas/${invoiceId}/pagamento`, {
+        const resposta = await fetch(`${API_BASE_URL}/faturas/${faturaId}/pagamento`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ dataPagamento: paymentDate })
+            body: JSON.stringify({ dataPagamento: dataPagamento })
         });
 
-        if (response.status === 400) { // Erro de validação
-            const errorBody = await response.json();
+        if (resposta.status === 400) { // Erro de validação
+            const errorBody = await resposta.json();
             alert(`Erro de validação: ${errorBody.message}\nDetalhes: ${errorBody.details ? errorBody.details.join('\n') : ''}`);
             console.error('Detalhes do erro de validação:', errorBody);
             return;
         }
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        if (!resposta.ok) {
+            throw new Error(`HTTP error! status: ${resposta.status}`);
         }
 
-        const updatedInvoice = await response.json();
-        alert(`Fatura ${updatedInvoice.id} paga com sucesso em ${updatedInvoice.dataPagamento}!`);
-        loadClientInvoices(); // Recarrega a lista para mostrar o status atualizado
+        const faturaAtualizada = await resposta.json();
+        alert(`Fatura ${faturaAtualizada.id} paga com sucesso em ${faturaAtualizada.dataPagamento}!`);
+        carregarFaturasCliente(); // Recarrega a lista para mostrar o status atualizado
     } catch (error) {
         console.error('Erro ao registrar pagamento:', error);
         alert('Erro ao registrar pagamento. Verifique o console.');
