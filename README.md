@@ -48,8 +48,7 @@ seu-repositorio-raiz/
 ├── frontend/               # Aplicação frontend (HTML, CSS, JS)
 │   ├── index.html          # Listagem e cadastro de clientes
 │   ├── faturas.html        # Listagem de faturas de um cliente
-│   ├── style.css
-│   └── script.js
+│   └── asserts/
 ├── database/               # Scripts SQL de inicialização do banco de dados
 │   ├── 01_schema.sql       # Criação de tabelas
 │   └── 02_seed.sql         # População de dados iniciais
