@@ -76,17 +76,39 @@ Siga estes passos para configurar e iniciar o ambiente completo:
    cd fintech-pagamentos # Navegue até a raiz do repositório
    ```
 
-2. **Inicie o Ambiente Docker:**
+2. **Execute o Script de Inicialização:**
    
-   * Certifique-se de que o **Docker Desktop esteja rodando**.
-   * Navegue até a **raiz do repositório** (onde está `docker-compose.yml`).
-   * Execute o comando para remover qualquer volume de dados antigo e iniciar os serviços do Docker Compose:
+   - Navegue até a **raiz do seu repositório** (onde está o arquivo `run_app.sh`).
+   
+   - **Para Linux/macOS:** Dê permissão de execução ao script (apenas uma vez):
      
-     ```bash
-     docker-compose down -v # Remove volumes antigos (garante DB limpo)
-     docker-compose up --build -d # Constrói imagens e inicia serviços em segundo plano
+     Bash
+     
      ```
-   * Aguarde alguns segundos. Você pode verificar o status dos contêineres com `docker-compose ps` e os logs de inicialização com `docker-compose logs backend` e `docker-compose logs db`.
+     chmod +x run_app.sh
+     ```
+   
+   - **Para Linux/macOS/Windows (usando Git Bash/WSL):** Execute o script:
+     
+     Bash
+     
+     ```
+     ./run_app.sh
+     ```
+     
+     - Este script irá:
+       
+       - Navegar para a pasta `backend/`.
+       
+       - Construir o projeto Spring Boot (gerando o JAR).
+       
+       - Remover contêineres e volumes Docker antigos (garantindo um ambiente limpo para o DB).
+       
+       - Construir as imagens Docker dos seus serviços.
+       
+       - Iniciar o contêiner do PostgreSQL e o contêiner da sua aplicação Spring Boot em segundo plano.
+   
+   - Aguarde a conclusão do script. Ele fornecerá mensagens de progresso e, ao final, as URLs para acesso à aplicação.
 
 3. **Acesse a API (Backend):**
    
@@ -142,7 +164,9 @@ O projeto inclui testes automatizados para garantir a qualidade e a funcionalida
 * **Como Rodar os Testes:**
   
   * Certifique-se de que o **Docker Desktop esteja rodando**.
+  
   * Navegue até a pasta `backend/` no seu terminal.
+  
   * Execute:
     
     ```bash
