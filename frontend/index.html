@@ -9,27 +9,11 @@
 </head>
 
 <body>
+
     <header>
         <h1>Gestão de Clientes</h1>
     </header>
     <main>
-        <section id="client-list">
-            <h2>Lista de Clientes</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>CPF</th>
-                        <th>Idade</th>
-                        <th>Status de Bloqueio</th>
-                        <th>Limite de Crédito</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="clients-tbody">
-                </tbody>
-            </table>
-        </section>
         <section id="add-client-form">
             <h2>Cadastrar Novo Cliente</h2>
             <form id="client-form">
@@ -55,7 +39,34 @@
                 <button type="submit">Cadastrar</button>
             </form>
         </section>
+        <section id="client-list">
+            <h2>Lista de Clientes</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Idade</th>
+                        <th>Status de Bloqueio</th>
+                        <th>Limite de Crédito</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="clients-tbody">
+                </tbody>
+            </table>
+        </section>
+
     </main>
+    <footer>
+        <p>&copy; 2025 Fintech Pagamentos. Todos os direitos reservados.</p>
+        <p>Desenvolvido por Cauany Rodrigues</p>
+        <div class="footer-links">
+            <a href="#">Política de Privacidade</a> |
+            <a href="#">Termos de Uso</a> |
+            <a href="#">Contato</a>
+        </div>
+    </footer>
     <script src="./assets/js/script.js"></script>
 </body>
 
