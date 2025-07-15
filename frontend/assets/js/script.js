@@ -31,18 +31,24 @@ function exibirMensagem(tipo, mensagem) {
   }
 
   containerMensagem.appendChild(alertaDiv);
-
+  
   // Força o reflow para garantir que a transição funcione
   void alertaDiv.offsetWidth;
-  alertaDiv.classList.add("visible");
+  alertaDiv.style.opacity = '1';
+  alertaDiv.style.transform = 'translateY(0)';
+  alertaDiv.classList.add('visible'); 
+
+  // Torna o contêiner interativo enquanto a mensagem está visível
+  containerMensagem.style.pointerEvents = 'auto';
 
   tempoMensagem = setTimeout(() => {
     alertaDiv.classList.remove("visible");
-
+    alertaDiv.style.opacity = '0'; 
+    alertaDiv.style.transform = 'translateY(-20px)';
     alertaDiv.addEventListener("transitionend", function handler(event) {
-      if (event.propertyName === "opacity" && alertDiv.style.opacity === "0") {
+      if (event.propertyName === "opacity" && alertaDiv.style.opacity === "0") {
         containerMensagem.innerHTML = ""; // Limpa o contêiner
-        alertDiv.removeEventListener("transitionend", handler);
+        alertaDiv.removeEventListener("transitionend", handler);
       }
     });
   }, 5000); // Mensagem visível por 5 segundos
