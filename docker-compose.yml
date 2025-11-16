@@ -2,8 +2,6 @@ services:
   db:
     image: postgres:17-alpine
     container_name: fintech_db
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_DB: pagamentosdb
       POSTGRES_USER: postgres
@@ -11,6 +9,11 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./database:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d pagamentosdb"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
     restart: unless-stopped
 
   backend:
@@ -25,9 +28,9 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: root
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: unless-stopped
-
 
 volumes:
   db_data:
